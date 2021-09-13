@@ -4,6 +4,8 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const JWT_TOKEN = "bhomiky@d@v";
+const fetchuser = require('../middlewares/fetchuser');
+
 
 router.post(
   "/createuser",
@@ -84,11 +86,26 @@ router.post(
             id: User.id,
           }
         };
-        console.log(data); 
+       
         const jwtData =await jwt.sign(data, JWT_TOKEN);
         res.json({token:jwtData});
       } catch (error) {
       console.log("error");
+    }
+  }
+);
+router.get(
+  "/getuser",fetchuser,
+
+  async (req, res) => {
+   
+try{
+
+    const userId= req.user.id;
+    const data =await User.findOne({userId}).select('-password')
+      res.json(data);
+    } catch (error) {
+      console.log(error);
     }
   }
 );
